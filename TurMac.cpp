@@ -16,11 +16,6 @@ struct turmac{
     struct turmac *prox;
 };
 
-typedef struct sp{
-    struct turmac *p;
-    unsigned int pos, est;
-}SP;
-
 struct turmac** initTurMac(unsigned int tam){
     struct turmac **init = (struct turmac**)malloc(tam*sizeof(struct turmac*));
     if(init != NULL){
@@ -107,6 +102,10 @@ struct turmac** insTran(struct turmac **Turmac, unsigned int state, char char_li
 }
 
 void execturmac(struct turmac **Turmac, unsigned int est, std::string &str, unsigned int pos, bool &achei){
+    typedef struct sp{
+        struct turmac *p;
+        unsigned int pos, est;
+    }SP;
     Stack stc = init();
     SP *pil = (SP*)malloc(sizeof(SP)), *aux = NULL;
     pil->p = Turmac[est];
@@ -122,6 +121,7 @@ void execturmac(struct turmac **Turmac, unsigned int est, std::string &str, unsi
         if(pil->p->final == true){
             achei = true;
             free(pil);
+            pil = NULL;
             break;
         }
         while(pil->p != NULL){
@@ -158,6 +158,8 @@ void execturmac(struct turmac **Turmac, unsigned int est, std::string &str, unsi
         }
     }while(!isEmpty(stc));
     stc = freeStack(stc);
+    if(pil != NULL)
+        free(pil);
 }
 
 bool execTurMac(struct turmac **Turmac, unsigned int num_est, std::string &str){
