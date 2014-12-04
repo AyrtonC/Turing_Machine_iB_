@@ -120,39 +120,25 @@ void execturmac(struct turmac **Turmac, unsigned int est, std::string &str, unsi
             break;
         if(pil->p->final == true){
             achei = true;
-            free(pil);
-            pil = NULL;
             break;
         }
         while(pil->p != NULL){
-            if(pil->p->caracter_lido == '?' && pil->pos >= str.length()){
-                if(pil->p->caracter_subst != '?'){
-                    str+=pil->p->caracter_subst;
-                    aux = (SP*)malloc(sizeof(SP));
-                    aux->p = Turmac[pil->p->estado_dest];
-                    aux->est = pil->p->estado_dest;
-                    aux->pos = pil->pos;
-                    pil->p->direcao == 'R' ? aux->pos++ : aux->pos--;
-                    pil->p = pil->p->prox;
-                    stc = push(stc, pil);
-                    pil = aux;
-                    aux = NULL;
-                    break;
-                }
-            }else if(pil->pos < str.length()){
-                if(pil->p->caracter_lido == str[pil->pos]){
+            if((pil->pos < str.length() && pil->p->caracter_lido == str[pil->pos]) || (pil->p->caracter_lido == '?' && pil->pos >= str.length() && pil->p->caracter_subst != '?')){
+                if(pil->pos < str.length() && pil->p->caracter_lido == str[pil->pos]){
                     str[pil->pos] = pil->p->caracter_subst;
-                    aux = (SP*)malloc(sizeof(SP));
-                    aux->p = Turmac[pil->p->estado_dest];
-                    aux->est = pil->p->estado_dest;
-                    aux->pos = pil->pos;
-                    pil->p->direcao == 'R' ? aux->pos++ : aux->pos--;
-                    pil->p = pil->p->prox;
-                    stc = push(stc, pil);
-                    pil = aux;
-                    aux = NULL;
-                    break;
+                }else{
+                    str+=pil->p->caracter_subst;
                 }
+                aux = (SP*)malloc(sizeof(SP));
+                aux->p = Turmac[pil->p->estado_dest];
+                aux->est = pil->p->estado_dest;
+                aux->pos = pil->pos;
+                pil->p->direcao == 'R' ? aux->pos++ : aux->pos--;
+                pil->p = pil->p->prox;
+                stc = push(stc, pil);
+                pil = aux;
+                aux = NULL;
+                break;
             }
             pil->p = pil->p->prox;
         }
